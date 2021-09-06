@@ -115,6 +115,106 @@ app.get('/divisores', (req, res) => {
   res.json({divisores: divisores(n)})
 })
 
+app.get('/divisores1', (req, res) => {
+  const n = +req.query.n;
+  res.json({divisores: divisores1(n)})
+})
+
+app.get('/minimo', (req, res) => {
+  const datos = [9, 11, 82, 9, 14];
+  res.json({minimo : minimo(datos)});
+})
+
+app.get('/posiciondelminimo', (req, res) => {
+  const datos = [3, 1, 2, 9, 14];
+  res.json({posicionDelMinimo : posicionDelMinimo(datos)});
+})
+
+app.get('/segundominimo', (req, res) => {
+  const datos = [3, 7, 4, 9, 3];
+  res.json({segundoMinimo : segundoMinimo(datos)});
+})
+
+app.get('/palindromos', (req, res) => {
+  const texto = "12";
+  res.json({palindromo : palindromos1(texto)});
+})
+
+app.get('/palindromos2', (req, res) => {
+  let texto = "44";
+  res.json({palindromos2 : palindromos2(texto)});
+})
+
+app.get('/maximoProductoDeNumerosConsecutivos', (req, res) => {
+  const datos = [3, -5, 4, -2, 5];
+  res.json({maximo : maximoProductoDeNumerosConsecutivos(datos)});
+})
+
+function palindromos(texto) {
+  for (let i = 0; i <= (texto.length - 1) / 2 ; i ++) {
+    if (texto[i] !== texto[texto.length - 1 - i]){
+      return false;
+    }
+  }
+  return true;
+}
+
+function palindromos1(texto) {
+  let i = 0;
+  while (i < (texto.length - 1) / 2 && texto[i] === texto[texto.length - 1 - i]){
+   i++;
+  }
+  if (i >= (texto.length -1) / 2){
+    return true; 
+  } else {
+    return false;
+  }
+}
+// "abcba"
+function palindromos2(texto) {
+  if (texto[0] !== texto[texto.length - 1]){
+    return false;
+  }
+ if (texto[0] === texto[texto.length - 1] && texto.length <= 2){
+    return true;
+  }
+  return palindromos2(texto.substring(1, texto.length - 1));
+}
+
+function palindromos3(texto) {
+  return (texto[0] === texto[texto.length - 1]) ? texto.length <= 2 || palindromos3(texto.substring(1, texto.length - 1)) : false;
+}
+
+function minimo(datos) {
+  let x = datos[0]
+  for (let i = 1; i < datos.length; i++) {
+    if (x > datos[i]) {
+      x = datos[i];      
+    }
+   // x = (x < datos[i]) ? x: datos[i]; 
+  }
+  return x;
+}
+
+function posicionDelMinimo(datos){
+  let x = datos[0];
+  let y = 0;
+  for (let i = 1; i < datos.length; i++) {
+    if (x > datos[i]){
+      x = datos[i];
+      y = i;
+    }
+  }
+  return y;
+}
+
+function segundoMinimo(datos){
+  let y = posicionDelMinimo(datos);
+  datos[y] = datos[datos.length - 1];
+  datos.pop(); // Removes datos[datos.length -1] from datos;
+  return minimo(datos);
+}
+
 function mayor(n, m) {
   return (n > m)? n : m;
 }
@@ -136,7 +236,7 @@ function cantidadDivisores(n) {
 }
 
 function divisores(n) {
-  let divisores = [];
+  const divisores = [];
   for (let i = n; i > 0; i--) {
     if (n % i === 0) {
       divisores.push(i);
@@ -172,4 +272,30 @@ function mcd (n,m) {
     x--
   }
   return x;
+}
+
+function divisores1(n) {
+  let divisores = [];
+  let i = 1;
+  for (; i < Math.sqrt(n); i++) {
+    if (n % i === 0) {
+     divisores.push(i, n / i);
+    }
+  }
+  if (i * i === n){
+    divisores.push(i)
+  }
+  return divisores;
+}
+//[3, 5, 4, 20, 5];
+function maximoProductoDeNumerosConsecutivos(datos){
+  let mayor = datos[0] * datos[1];
+  for (let i = 1; i < datos.length - 1; i++){
+    const producto =  datos[i] * datos[i + 1];
+    if (mayor < producto) {
+      mayor = producto
+    }
+   // x = (x > (datos[i] * datos[i + 1])) ? x: datos[i] * datos[i + 1];
+  }
+  return mayor;
 }
